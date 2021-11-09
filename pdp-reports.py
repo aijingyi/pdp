@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Copyright (C) 2013 - 2019 Wind River Systems, Inc.
 # File  : pdp-reports.py
@@ -8,17 +8,20 @@
 # update : 2020.12.03 
 # add lab requests, set blocker defects as first
 
+# update: 2021.11.09
+# use python3;
+# suport more than two git repos
+# suport lts21, wrcp on jira
+
 from __future__ import division
-import commands
+import subprocess
 import json
-import urllib
+import urllib.request
 import getpass
 import os
 import sys
 import re
 import time
-import urllib
-import urllib2
 from optparse import OptionParser
 
 class Env_Setup():
@@ -51,7 +54,10 @@ class Env_Setup():
         self.fullname = name_dic[self.username]
 
         self.current_dir = os.getcwd()
-        self.filename = "%s/pdp_reports_%s_%s.txt" %(self.current_dir, self.username, self.report_year )
+        self.reports_dir = os.path.join(self.current_dir, "reports", self.report_year)
+        if not os.path.exists(self.reports_dir):
+            os.makedirs(self.reports_dir)
+        self.filename = "%s/pdp_reports_%s_%s.txt" %(self.reports_dir, self.username, self.report_year )
         if os.path.exists(self.filename):
             os.remove(self.filename)
 
@@ -69,10 +75,8 @@ class Defects_Top():
         self.username = username
         self.filename = env.filename
 
-        self.project = '"LINCD","LIN1019","LIN1018", "LIN10", "LIN9","LIN8","LIN7",\
-"LIN6", "LINPUL8", "LINPULLT17","OVP6", "OVP7","OVP8", "OVP9", "CGP5", "CGP6",\
- "CGP7", "CGP8", "CGP9", "SCP6","SCP7", "SCP8", "SCP9", "IDP3"'
-	self.lab_project = "LABOPS"
+        self.project = '"LINCD","SODEPEXE","LIN1021","CGTS","LIN1019","LIN1018", "LIN10", "LIN9","LIN8","LIN7"'
+        self.lab_project = "LABOPS"
 
         self.create_time = 'created  >= "%s/01/01" AND created <= "%s/12/31"' % (self.year, self.year)
         self.update_time = ' "Closed Date" >= "%s/01/01" AND  "Closed Date" <= "%s/12/31"' % (self.year, self.year)
@@ -88,11 +92,11 @@ class Defects_Top():
        
    
     def curl_to_jira(self,jql):
-        jql_code = urllib.quote(jql)
+        jql_code = urllib.request.quote(jql)
         url_data = self.url + jql_code
 
         curl_data = 'curl -sb -H "Content-Type: application/json" -u apiuser:apiuser -X GET "%s"' % url_data
-        out = commands.getoutput(curl_data)
+        out = subprocess.getoutput(curl_data)
         out = json.loads(out)
         defects_name = ""
         for issue in  out["issues"]:
@@ -172,7 +176,7 @@ class Defects_Top():
         self.defects_valid_ratio()
         self.defects_test_blocking()
         self.defects_with_p()
-	self.lab_defects()
+        self.lab_defects()
         self.defects_verified()        
         print("Your defects list are created successfully.")
 
@@ -181,18 +185,22 @@ class Commit_Reports():
 
     def __init__(self, fullname,username, year):
         # test layer for master 
-        self.link = "/lpg-build/cdc/WASSP_LINUX_MASTER_WR/testcases/wrlinux/"
+        self.link = ["/lpg-build/cdc/WASSP_LINUX_MASTER_WR/testcases/wrlinux/","/lpg-build/cdc/starlingx/wrcp/","/lpg-build/cdc/starlingx/other_git/wassp-linux/"]
         self.username = username
         self.fullname = fullname
         self.year = year
 
-
-    def git_log(self):
+    def get_git_all_log(self):
         print("Your test cases commits are creating.")
         print("Please wait ..........")
-        cd_git = os.chdir(self.link)
+        for l in self.link:
+            self.git_one_log(l)
+        print("Your test cases commits are created successfully.")
+
+    def git_one_log(self, one_link):
+        cd_git = os.chdir(one_link)
         git_cmd = 'git log --no-merges --before={%s-12-31} --after={%s-01-01} --author="%s" --pretty=format:"%%H"' % (self.year, self.year, self.fullname)
-        get_commits = commands.getoutput(git_cmd).split() 
+        get_commits = subprocess.getoutput(git_cmd).split() 
 
         add_cases = ""
         rca_add_cases = ""
@@ -205,11 +213,18 @@ class Commit_Reports():
         rca_update_nums = 0
         other_nums = 0
         for co in get_commits:
-            commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?id=%s" % co
+            if "wrcp" in one_link:
+                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/wrcp.git/commit/?id=%s" % co
+            elif "testcases" in one_link:
+                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?id=%s" % co
+            elif "wassp-linux" in one_link:
+                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/wassp-linux.git/commit/?id=%s" % co
             show_cmd = "git show %s -s --format=%%s" % co
-            get_show = commands.getoutput(show_cmd)
+            get_show = subprocess.getoutput(show_cmd)
+            #print("============================")
             #print(get_show)
-            if re.search("test results for|testresults for|test-plan|testplan|test plan|test report|testing report", get_show):
+            #print("============================")
+            if re.search("test results for|testresults for|test-plan|testplan|test plan|test report|testing report|Update XML and test_case|\.ini|target info|#", get_show):
                 other_nums += 1
                 if env.commit == "no":
                     other_cases = other_cases  + "  " + commit_link + "\n"
@@ -249,6 +264,9 @@ class Commit_Reports():
                     other_cases = other_cases + "  " + commit_link + "\n"
                 else:
                     other_cases = other_cases + "  " + get_show + "\n  " + commit_link + "\n"
+        if add_nums == 0 and update_nums == 0:
+            return
+        env.write_txt("\nGit repo: %s\n" % one_link.split('/')[-2])
         env.write_txt("1. New test cases commits.\n\n  Numbers:%s\n" % add_nums)
         env.write_txt(add_cases)
         if rca_add_nums:
@@ -262,7 +280,6 @@ class Commit_Reports():
         if other_nums:
             env.write_txt("\n  Other test commits.\n\n  Numbers:%s\n" % other_nums)
             env.write_txt(other_cases)
-        print("Your test cases commits are created successfully.")
         #print(add_nums)
         #print(add_cases)
         #print(update_nums)
@@ -272,33 +289,39 @@ class User_Story():
     def __init__(self,username, report_year):
         self.year = report_year
         self.username = username    
-        self.release = ["WRLinux 10.17.41.x", "WRLinux 10.18","WRLinux 10.19", "WRLinux CD Standard", "WRLinux CD Next"]
+        #self.release = ["WRLinux 10.17.41.x", "WRLinux 10.18","WRLinux 10.19", "WRLinux CD Standard", "WRLinux CD Next"]
+        self.release = ["WRLinux 10.21", "WRLinux CD Standard", "WRLinux CD Next",
+                       "centos7 kernel 5.10 stx"]
         #self.release = ["WRLinux 10.19", "WRLinux CD Standard", "WRLinux CD Next"]
         #print self.ltaf_link
 
     def get_html(self, ltaf_link):    
-        html = urllib2.urlopen(ltaf_link.replace(" ", "%20")).read()
+        html = urllib.request.urlopen(ltaf_link.replace(" ", "%20")).read()
         #print html
         return html
     def get_us(self, html):
+        html=html.decode('utf-8')
         reg = r'req_ids=\'(.*)\' name='
         usre = re.compile(reg)
         us = re.findall(usre, html)
         return us
 
     def get_summary(self,html):
+        html=html.decode('utf-8')
         reg = r'requirement_summary\'>(.*?)</td><td id='
         summaryre = re.compile(reg)
         summary = re.findall(summaryre, html)
         return summary
 
     def get_trs(self,html):
+        html=html.decode('utf-8')
         reg = r'><b>(.*?) TRs'
         trsre = re.compile(reg)
         trs = re.findall(trsre, html)
         return trs
 
     def get_result_trs(self,html):
+        html=html.decode('utf-8')
         #reg = r'><b>(.*?) TRs'
         #trsre = re.compile(reg)
         #trs = re.findall(trsre, html)
@@ -358,11 +381,11 @@ class Jira_Project():
         self.jql_all = 'assignee = %s  AND status in ("To Do", "In progress","Done") AND project = "Linux Execution Project" AND %s ORDER BY created DESC' %(self.username, self.create_time)
         
     def curl_to_jira(self,jql):
-        jql_code = urllib.quote(jql)
+        jql_code = urllib.request.quote(jql)
         url_data = self.url + jql_code
 
         curl_data = 'curl -sb -H "Content-Type: application/json" -u apiuser:apiuser -X GET "%s"' % url_data
-        out = commands.getoutput(curl_data)
+        out = subprocess.getoutput(curl_data)
         out = json.loads(out)
         defects_dic = {}
         defects_name = ""
@@ -397,14 +420,17 @@ class Jira_Project():
 if __name__ == "__main__":
 
     env = Env_Setup()
+    report_name = env.filename
 
     mygit = Commit_Reports(env.fullname, env.username, env.report_year)
-    mygit.git_log()
+    mygit.get_git_all_log()
 
     mydefect = Defects_Top(env.username, env.report_year)
     mydefect.main()
+    
     myus = User_Story(env.username, env.report_year)
     myus.ltaf_main()
 
     myjp = Jira_Project()
     myjp.jira_main()
+    print("Please check your pdp reports: " + report_name)
