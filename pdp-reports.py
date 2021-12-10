@@ -185,7 +185,9 @@ class Commit_Reports():
 
     def __init__(self, fullname,username, year):
         # test layer for master 
-        self.link = ["/lpg-build/cdc/WASSP_LINUX_MASTER_WR/testcases/wrlinux/","/lpg-build/cdc/starlingx/wrcp/","/lpg-build/cdc/starlingx/other_git/wassp-linux/"]
+        self.link = ["/lpg-build/cdc/WASSP_LINUX_MASTER_WR/testcases/wrlinux/",\
+"/lpg-build/cdc/starlingx/wrcp/","/lpg-build/cdc/starlingx/other_git/wassp-linux/",\
+"/lpg-build/cdc/jenkins-builder-v2/"]
         self.username = username
         self.fullname = fullname
         self.year = year
@@ -219,12 +221,14 @@ class Commit_Reports():
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?id=%s" % co
             elif "wassp-linux" in one_link:
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/wassp-linux.git/commit/?id=%s" % co
+            elif "jenkins-builder" in one_link:
+                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/jenkins-builder.git/commit/?id=%s" % co
             show_cmd = "git show %s -s --format=%%s" % co
             get_show = subprocess.getoutput(show_cmd)
             #print("============================")
             #print(get_show)
             #print("============================")
-            if re.search("test results for|testresults for|test-plan|testplan|test plan|test report|testing report|Update XML and test_case|\.ini|target info|#", get_show):
+            if re.search("test results for|ipxe|board|testresults for|test-plan|testplan|test plan|test report|testing report|Update XML and test_case|\.ini|target info|#", get_show):
                 other_nums += 1
                 if env.commit == "no":
                     other_cases = other_cases  + "  " + commit_link + "\n"
