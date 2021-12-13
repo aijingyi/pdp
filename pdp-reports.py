@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright (C) 2013 - 2019 Wind River Systems, Inc.
+# Copyright (C) 2013 - 2021 Wind River Systems, Inc.
 # File  : pdp-reports.py
 # Author: Kai Liang <Kai.Liang@windriver.com>
 # Date  : 2019.12.25
@@ -234,7 +234,8 @@ class Commit_Reports():
                     other_cases = other_cases  + "  " + commit_link + "\n"
                 else:
                     other_cases = other_cases + "  " + get_show + "\n  " + commit_link + "\n"
-            elif get_show.startswith("Add") or get_show.startswith("add") or get_show.startswith("Added"):
+            elif get_show.startswith("Add") or get_show.startswith("add") or \
+get_show.startswith("Added") or get_show.startswith("Migrate"):
                 if "RCA" in get_show:
                     rca_add_nums += 1
                     if env.commit == "no":
