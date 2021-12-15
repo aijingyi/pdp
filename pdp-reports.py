@@ -82,7 +82,7 @@ class Defects_Top():
         self.update_time = ' "Closed Date" >= "%s/01/01" AND  "Closed Date" <= "%s/12/31"' % (self.year, self.year)
         self.jql_all = 'project in (%s)  AND reporter in (%s)  AND %s' %(self.project,self.username,self.create_time)
         self.jql_lab = 'project in (%s)  AND reporter in (%s)  AND %s' %(self.lab_project,self.username,self.create_time)
-        self.jql_test_blocking = 'project in (%s)  AND reporter in (%s)  AND %s AND labels = TEST_BLOCKING' %(self.project,self.username,self.create_time)
+        self.jql_test_blocking = 'project in (%s)  AND reporter in (%s)  AND %s AND labels in (TESTING_BLOCKED,TEST_BLOCKING)' %(self.project,self.username,self.create_time)
 
         self.jql_valid = '''project in (%s)  AND reporter in (%s)  AND %s AND status in (Resolved, Closed, "Checked In") AND resolution in (Fixed, "Won't Fix")''' %(self.project, self.username, self.create_time)
         self.jql_valid_all = 'project in (%s)  AND reporter in (%s)  AND %s AND status in (Resolved, Closed, "Checked In")' %(self.project, self.username,self.create_time)
