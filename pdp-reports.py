@@ -1,17 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright (C) 2013 - 2021 Wind River Systems, Inc.
+# Copyright (C) 2013 - 2022 Wind River Systems, Inc.
 # File  : pdp-reports.py
 # Author: Kai Liang <Kai.Liang@windriver.com>
 # Date  : 2019.12.25
-
-# update : 2020.12.03 
-# add lab requests, set blocker defects as first
-
-# update: 2021.11.09
-# use python3;
-# suport more than two git repos
-# suport lts21, wrcp on jira
 
 from __future__ import division
 import subprocess
@@ -49,7 +41,7 @@ class Env_Setup():
         self.report_year = opts.year
         self.commit = opts.commit
 
-        name_dic = {"zzhao1":"Zhenfeng Zhao", "kliang":"Kai Liang\|Kai.Liang", "wgao":"Wei Gao", "xdong":"xdong\|Xiangyu Dong", "lyang0":"Lei Yang", "jhu2":"Jianwei Hu", "rqu1":"Renfei.Qu", "zwang7":"Zhe Wang", "sjiao":"sjiao|Shilong.Jiao|Shilong Jiao", "pyan":"Peng Yan", "jkang":"Jian Kang", "lwang4":"Li Wang", "lliu2":"Le Liu", "xhou":"Xinlong Hou", "flian":"Fangfang Lian", "zliu2":"Zeming Liu", "cxu":"Chi Xu"}
+        name_dic = {"zzhao1":"Zhenfeng Zhao", "kliang":"Kai Liang\|Kai.Liang", "wgao":"Wei Gao", "xdong":"xdong\|Xiangyu Dong", "lyang0":"Lei Yang", "jhu2":"Jianwei Hu", "rqu1":"Renfei.Qu", "sjiao":"sjiao|Shilong.Jiao|Shilong Jiao", "pyan":"Peng Yan", "jkang":"Jian Kang", "lwang4":"Li Wang", "lliu2":"Le Liu", "xhou":"Xinlong Hou", "flian":"Fangfang Lian", "zliu2":"Zeming Liu", "cxu":"Chi Xu"}
 
         self.fullname = name_dic[self.username]
 
@@ -75,7 +67,7 @@ class Defects_Top():
         self.username = username
         self.filename = env.filename
 
-        self.project = '"LINCD","SODEPEXE","LIN1021","CGTS","LIN1019","LIN1018", "LIN10", "LIN9","LIN8","LIN7"'
+        self.project = '"LINCD","SODEPEXE","LIN1021","LIN1022","CGTS","LIN1019","LIN1018", "LIN10", "LIN9","LIN8","LIN7"'
         self.lab_project = "LABOPS"
 
         self.create_time = 'created  >= "%s/01/01" AND created <= "%s/12/31"' % (self.year, self.year)
@@ -186,7 +178,8 @@ class Commit_Reports():
     def __init__(self, fullname,username, year):
         # test layer for master 
         self.link = ["/lpg-build/cdc/WASSP_LINUX_MASTER_WR/testcases/wrlinux/",\
-"/lpg-build/cdc/starlingx/wrcp/","/lpg-build/cdc/starlingx/other_git/wassp-linux/",\
+"/lpg-build/cdc/WASSP_LINUX_1022/testcases/wrlinux/",\
+"/lpg-build/cdc/starlingx/wrcp/","/lpg-build/cdc/starlingx/debian/","/lpg-build/cdc/starlingx/other_git/wassp-linux/",\
 "/lpg-build/cdc/jenkins-builder-v2/"]
         self.username = username
         self.fullname = fullname
@@ -216,12 +209,22 @@ class Commit_Reports():
         other_nums = 0
         for co in get_commits:
             if "wrcp" in one_link:
+                branch_name = "wrcp"
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/wrcp.git/commit/?id=%s" % co
-            elif "testcases" in one_link:
+            elif "debian" in one_link:
+                branch_name = "debian"
+                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/wrcp.git/commit/?h=debian&id=%s" % co
+            elif "WASSP_LINUX_MASTER_WR" in one_link:
+                branch_name = "WRLinux master"
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?id=%s" % co
+            elif "WASSP_LINUX_1022" in one_link:
+                branch_name = "WRLinux 10.22"
+                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?h=WRLINUX_10_22_HEAD&id=%s" % co
             elif "wassp-linux" in one_link:
+                branch_name = "wassp-linux"
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/wassp-linux.git/commit/?id=%s" % co
             elif "jenkins-builder" in one_link:
+                branch_name = "jenkins-builder"
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/jenkins-builder.git/commit/?id=%s" % co
             show_cmd = "git show %s -s --format=%%s" % co
             get_show = subprocess.getoutput(show_cmd)
@@ -271,7 +274,7 @@ get_show.startswith("Added") or get_show.startswith("Migrate"):
                     other_cases = other_cases + "  " + get_show + "\n  " + commit_link + "\n"
         if add_nums == 0 and update_nums == 0:
             return
-        env.write_txt("\nGit repo: %s\n" % one_link.split('/')[-2])
+        env.write_txt("\nGit repo: %s\n" % branch_name)
         env.write_txt("1. New test cases commits.\n\n  Numbers:%s\n" % add_nums)
         env.write_txt(add_cases)
         if rca_add_nums:
@@ -295,7 +298,7 @@ class User_Story():
         self.year = report_year
         self.username = username    
         #self.release = ["WRLinux 10.17.41.x", "WRLinux 10.18","WRLinux 10.19", "WRLinux CD Standard", "WRLinux CD Next"]
-        self.release = ["WRLinux 10.21", "WRLinux CD Standard", "WRLinux CD Next",
+        self.release = ["WRLinux 10.22", "WRLinux 10.21", "WRLinux CD Standard", "WRLinux CD Next",
                        "centos7 kernel 5.10 stx"]
         #self.release = ["WRLinux 10.19", "WRLinux CD Standard", "WRLinux CD Next"]
         #print self.ltaf_link
