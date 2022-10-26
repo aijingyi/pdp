@@ -297,10 +297,9 @@ class User_Story():
     def __init__(self,username, report_year):
         self.year = report_year
         self.username = username    
-        #self.release = ["WRLinux 10.17.41.x", "WRLinux 10.18","WRLinux 10.19", "WRLinux CD Standard", "WRLinux CD Next"]
+        #"WRLinux 10.17.41.x", "WRLinux 10.18","WRLinux 10.19", "WRLinux CD Standard", "WRLinux CD Next"
         self.release = ["WRLinux 10.22", "WRLinux 10.21", "WRLinux CD Standard", "WRLinux CD Next",
-                       "centos7 kernel 5.10 stx"]
-        #self.release = ["WRLinux 10.19", "WRLinux CD Standard", "WRLinux CD Next"]
+                       "centos7 kernel 5.10 stx", "debian stx"]
         #print self.ltaf_link
 
     def get_html(self, ltaf_link):    
