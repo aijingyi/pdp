@@ -67,7 +67,7 @@ class Defects_Top():
         self.username = username
         self.filename = env.filename
 
-        self.project = '"LINCD","SODEPEXE","LIN1021","LIN1022","CGTS","LIN1019","LIN1018", "LIN10", "LIN9","LIN8","LIN7"'
+        self.project = '"LINCD","SODEPEXE","DEVOPS","LIN1021","LIN1022","CGTS","LIN1019","LIN1018", "LIN10", "LIN9","LIN8","LIN7"'
         self.lab_project = "LABOPS"
 
         self.create_time = 'created  >= "%s/01/01" AND created <= "%s/12/31"' % (self.year, self.year)
@@ -76,7 +76,9 @@ class Defects_Top():
         self.jql_lab = 'project in (%s)  AND reporter in (%s)  AND %s' %(self.lab_project,self.username,self.create_time)
         self.jql_test_blocking = 'project in (%s)  AND reporter in (%s)  AND %s AND labels in (TESTING_BLOCKED,TEST_BLOCKING)' %(self.project,self.username,self.create_time)
 
-        self.jql_valid = '''project in (%s)  AND reporter in (%s)  AND %s AND status in (Resolved, Closed, "Checked In") AND resolution in (Fixed, "Won't Fix")''' %(self.project, self.username, self.create_time)
+        #self.jql_valid = '''project in (%s)  AND reporter in (%s)  AND %s AND status in (Resolved, Closed, "Checked In") AND resolution in (Fixed, "Won't Fix")''' %(self.project, self.username, self.create_time)
+        # not Duplicate, Rejected, Withdraw
+        self.jql_valid = '''project in (%s)  AND reporter in (%s)  AND %s AND resolution was not in (Duplicate, Rejected, Withdrawn) ''' %(self.project, self.username, self.create_time)
         self.jql_valid_all = 'project in (%s)  AND reporter in (%s)  AND %s AND status in (Resolved, Closed, "Checked In")' %(self.project, self.username,self.create_time)
 
         #self.jql_verified = 'project in (LIN8, CGP8, SCP8, OVP8, "Linux Pulsar 8", "IDP 3.x", "Linux 10.17", "Linux 10.18","LIN1019")  AND tester in (%s)  AND %s' % (self.username, self.create_time)
@@ -129,9 +131,13 @@ class Defects_Top():
 
         #Defect Valid Ratio
         valid_num, defects_name_valid = self.curl_to_jira(self.jql_valid)
-        valid_all_num, defects_name_invalid = self.curl_to_jira(self.jql_valid_all)
-        self.write_txt(("\n  Numbers of valid defects: %s\n  Numbers of valid and invalid defects: %s\n") %(valid_num, valid_all_num))
-        valid_ratio = valid_num / valid_all_num
+        all_num, defects_name_all = self.curl_to_jira(self.jql_all)
+        #valid_all_num, defects_name_invalid = self.curl_to_jira(self.jql_valid_all)
+        self.write_txt("\n  Numbers of valid defects: %s\n" % valid_num)
+        if all_num == 0:
+            valid_ratio = 0
+        else:
+            valid_ratio = valid_num / all_num
         self.write_txt('  Valid Ratio of defects = {:.2%}\n'.format(valid_ratio))
 
     def lab_defects(self):
