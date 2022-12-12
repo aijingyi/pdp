@@ -200,6 +200,10 @@ class Commit_Reports():
 
     def git_one_log(self, one_link):
         cd_git = os.chdir(one_link)
+        get_safe_path = subprocess.getoutput("git config  --global --get-all safe.directory")
+        if one_link not in get_safe_path:
+            git_config = "git config --global --add safe.directory %s" % (one_link)
+            subprocess.getoutput(git_config)
         git_cmd = 'git log --no-merges --before={%s-12-31} --after={%s-01-01} --author="%s" --pretty=format:"%%H"' % (self.year, self.year, self.fullname)
         get_commits = subprocess.getoutput(git_cmd).split() 
 
@@ -222,7 +226,7 @@ class Commit_Reports():
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/wrcp.git/commit/?h=debian&id=%s" % co
             elif "WASSP_LINUX_MASTER_WR" in one_link:
                 branch_name = "WRLinux master"
-                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?id=%s" % co
+                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?h=master&id=%s" % co
             elif "WASSP_LINUX_1022" in one_link:
                 branch_name = "WRLinux 10.22"
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?h=WRLINUX_10_22_HEAD&id=%s" % co
