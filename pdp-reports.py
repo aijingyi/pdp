@@ -41,7 +41,7 @@ class Env_Setup():
         self.report_year = opts.year
         self.commit = opts.commit
 
-        name_dic = {"zzhao1":"Zhenfeng Zhao", "kliang":"Kai Liang\|Kai.Liang", "wgao":"Wei Gao", "xdong":"xdong\|Xiangyu Dong", "lyang0":"Lei Yang", "jhu2":"Jianwei Hu", "rqu1":"Renfei.Qu", "sjiao":"sjiao|Shilong.Jiao|Shilong Jiao", "pyan":"Peng Yan", "jkang":"Jian Kang", "lwang4":"Li Wang", "lliu2":"Le Liu", "xhou":"Xinlong Hou", "flian":"Fangfang Lian", "zliu2":"Zeming Liu", "cxu":"Chi Xu"}
+        name_dic = {"zzhao1":"Zhenfeng Zhao", "kliang":"Kai Liang\|Kai.Liang", "wgao":"Wei Gao", "xdong":"xdong\|Xiangyu Dong", "lyang0":"Lei Yang", "jhu2":"Jianwei Hu", "rqu1":"Renfei.Qu", "sjiao":"sjiao\|Shilong.Jiao\|Shilong Jiao", "pyan":"Peng Yan", "jkang":"Jian Kang", "lwang4":"Dalia Wang\|Li Wang", "lliu2":"le.liu\|Le Liu", "xhou":"Xinlong Hou", "flian":"Fangfang Lian", "zliu2":"Zeming LIU\|Zeming Liu", "cxu":"Chi Xu"}
 
         self.fullname = name_dic[self.username]
 
