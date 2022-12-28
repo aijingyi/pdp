@@ -110,7 +110,7 @@ class Defects_Top():
 
         # All defects
         num, defects_name = self.curl_to_jira(self.jql_all)
-        self.write_txt("\n3. Submitted defects list.\n")
+        self.write_txt("\n3. Submitted defects list:\n")
         all_nums = "\n  Numbers of all submitted defects: %s\n" % num
         self.write_txt(all_nums)
         #self.write_txt(defects_name)
@@ -144,8 +144,8 @@ class Defects_Top():
 
         # All defects
         num, defects_name = self.curl_to_jira(self.jql_lab)
-        self.write_txt("\n4. Submitted lab request list.\n")
-        lab_nums = "\n  Numbers of all submitted reqeusts: %s\n" % num
+        self.write_txt("\n  Submitted lab request list:\n")
+        lab_nums = "\n  Numbers of all submitted requests: %s\n" % num
         self.write_txt(lab_nums)
         self.write_txt(defects_name)
     
@@ -153,7 +153,7 @@ class Defects_Top():
 
         #Defects Verified 
         verified_num, defects_verified = self.curl_to_jira(self.jql_verified)
-        verified_txt = "\n5. Verified defects list.\n\n  Numbers: %s\n" % verified_num
+        verified_txt = "\n4. Verified defects list:\n\n  Numbers: %s\n" % verified_num
         self.write_txt(verified_txt)
         self.write_txt("%s" % defects_verified)
 
@@ -285,18 +285,18 @@ get_show.startswith("Added") or get_show.startswith("Migrate"):
         if add_nums == 0 and update_nums == 0:
             return
         env.write_txt("\nGit repo: %s\n" % branch_name)
-        env.write_txt("1. New test cases commits.\n\n  Numbers:%s\n" % add_nums)
+        env.write_txt("1. New test cases commits:\n\n  Numbers:%s\n" % add_nums)
         env.write_txt(add_cases)
         if rca_add_nums:
-            env.write_txt("\n  RCA add test cases commits.\n\n  Numbers:%s\n" % rca_add_nums)
+            env.write_txt("\n  RCA add test cases commits\n\n  Numbers:%s\n" % rca_add_nums)
             env.write_txt(rca_add_cases)
-        env.write_txt("\n2. Update test cases commits.\n\n  Numbers:%s\n" % update_nums)
+        env.write_txt("\n2. Update test cases commits:\n\n  Numbers:%s\n" % update_nums)
         env.write_txt(update_cases)
         if rca_update_nums:
-            env.write_txt("\n  RCA update test cases commits.\n\n  Numbers:%s\n" % rca_update_nums)
+            env.write_txt("\n  RCA update test cases commits\n\n  Numbers:%s\n" % rca_update_nums)
             env.write_txt(rca_update_cases)
         if other_nums:
-            env.write_txt("\n  Other test commits.\n\n  Numbers:%s\n" % other_nums)
+            env.write_txt("\n  Other test commits\n\n  Numbers:%s\n" % other_nums)
             env.write_txt(other_cases)
         #print(add_nums)
         #print(add_cases)
@@ -379,7 +379,7 @@ class User_Story():
     def ltaf_main(self):
         print("Your user story are creating.")
         print("Please wait ..........")
-        env.write_txt("\n6. Test run list\n")
+        env.write_txt("\n5. Test run list:\n")
         trs_all = 0
         for r in self.release:
             trs_all = trs_all + int(self.get_all(r))
@@ -429,9 +429,14 @@ class Jira_Project():
 
     def jira_main(self):
         num, defects_name = self.curl_to_jira(self.jql_all)
-        env.write_txt("\n7.Feature User Story lists:\n\n")
+        env.write_txt("\n6. Feature User Story lists:\n\n")
         env.write_txt("  %s User Story\n" % num)
         env.write_txt(defects_name)
+        
+        env.write_txt("\n7. Internal trainings and technical documentations:\n\n")
+        env.write_txt("\n8. Linux test improvements:\n\n")
+        env.write_txt("\n9. Highlights:\n\n")
+        env.write_txt("\n10. Other worthy data and exmaples:\n\n\n")
 
 
 if __name__ == "__main__":
