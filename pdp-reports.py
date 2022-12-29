@@ -183,10 +183,10 @@ class Commit_Reports():
 
     def __init__(self, fullname,username, year):
         # test layer for master 
-        self.link = ["/lpg-build/cdc/WASSP_LINUX_MASTER_WR/testcases/wrlinux/",\
-"/lpg-build/cdc/WASSP_LINUX_1022/testcases/wrlinux/",\
-"/lpg-build/cdc/starlingx/wrcp/","/lpg-build/cdc/starlingx/debian/","/lpg-build/cdc/starlingx/other_git/wassp-linux/",\
-"/lpg-build/cdc/jenkins-builder-v2/"]
+        self.link = ["/lpg-build/cdc/WASSP_LINUX_MASTER_WR/testcases/wrlinux",\
+"/lpg-build/cdc/WASSP_LINUX_1022/testcases/wrlinux",\
+"/lpg-build/cdc/starlingx/wrcp","/lpg-build/cdc/starlingx/debian","/lpg-build/cdc/starlingx/other_git/wassp-linux",\
+"/lpg-build/cdc/jenkins-builder-v2"]
         self.username = username
         self.fullname = fullname
         self.year = year
@@ -200,6 +200,7 @@ class Commit_Reports():
 
     def git_one_log(self, one_link):
         cd_git = os.chdir(one_link)
+        subprocess.getoutput("git config --global --unset-all safe.directory %s" % one_link)
         get_safe_path = subprocess.getoutput("git config  --global --get-all safe.directory")
         if one_link not in get_safe_path:
             git_config = "git config --global --add safe.directory %s" % (one_link)
