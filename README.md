@@ -21,7 +21,7 @@ http://lxgit.wrs.com/cgit/users/kliang/pdp-reports.git/
 *7. Internal trainings and technical documentations (NA)
 *8. Linux test improvements (NA)
 *9. Highlights (NA)
-*10. Other worthy data and exmaples (NA)
+*10. Other worthy data and examples (NA)
 
 ##Let me know any questions:
 kai.liang@windriver.com

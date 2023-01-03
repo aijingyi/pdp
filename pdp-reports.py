@@ -437,7 +437,7 @@ class Jira_Project():
         env.write_txt("\n7. Internal trainings and technical documentations:\n\n")
         env.write_txt("\n8. Linux test improvements:\n\n")
         env.write_txt("\n9. Highlights:\n\n")
-        env.write_txt("\n10. Other worthy data and exmaples:\n\n\n")
+        env.write_txt("\n10. Other worthy data and examples:\n\n\n")
 
 
 if __name__ == "__main__":
