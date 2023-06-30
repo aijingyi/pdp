@@ -22,7 +22,7 @@ class Env_Setup():
 
         #get your linux username
         username = getpass.getuser()
-        #username="zzhao1, kliang, wgao, xdong, lyang0, jhu2, rqu1, zwang7, sjiao, pyan, jkang, lwang4, lliu2, xhou, flian, zliu2, cxu"
+        #username="zzhao1, kliang, wgao, xdong, lyang0, jhu2, zwang7, sjiao, pyan, jkang, lwang4, lliu2, xhou, flian, zliu2, cxu"
         # report year
         year = time.strftime("%Y", time.localtime())
 
@@ -67,7 +67,7 @@ class Defects_Top():
         self.username = username
         self.filename = env.filename
 
-        self.project = '"LINCD","SODEPEXE","DEVOPS","LIN1021","LIN1022","CGTS","LIN1019","LIN1018", "LIN10", "LIN9","LIN8","LIN7"'
+        self.project = '"LINCD","SODEPEXE","DEVOPS","LIN1021","LIN1022","LIN1023","CGTS"'
         self.lab_project = "LABOPS"
 
         self.create_time = 'created  >= "%s/01/01" AND created <= "%s/12/31"' % (self.year, self.year)
@@ -183,10 +183,17 @@ class Commit_Reports():
 
     def __init__(self, fullname,username, year):
         # test layer for master 
-        self.link = ["/lpg-build/cdc/WASSP_LINUX_MASTER_WR/testcases/wrlinux",\
-"/lpg-build/cdc/WASSP_LINUX_1022/testcases/wrlinux",\
-"/lpg-build/cdc/starlingx/wrcp","/lpg-build/cdc/starlingx/debian","/lpg-build/cdc/starlingx/other_git/wassp-linux",\
-"/lpg-build/cdc/jenkins-builder-v2"]
+        self.link = [
+            "/lpg-build/cdc/WASSP_LINUX_MASTER_WR/testcases/wrlinux",
+            "/lpg-build/cdc/WASSP_LINUX_1021/testcases/wrlinux",
+            "/lpg-build/cdc/WASSP_LINUX_1022/testcases/wrlinux",
+            "/lpg-build/cdc/WASSP_LINUX_1023/testcases/wrlinux",
+            "/lpg-build/cdc/starlingx/wrcp",
+            "/lpg-build/cdc/starlingx/debian",
+            "/lpg-build/cdc/starlingx/other_git/wassp-linux",
+            "/lpg-build/cdc/jenkins-builder-v2",
+            "/lpg-build/cdc/jenkins-builder-lts23"
+        ]
         self.username = username
         self.fullname = fullname
         self.year = year
@@ -228,9 +235,15 @@ class Commit_Reports():
             elif "WASSP_LINUX_MASTER_WR" in one_link:
                 branch_name = "WRLinux master"
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?h=master&id=%s" % co
+            elif "WASSP_LINUX_1023" in one_link:
+                branch_name = "WRLinux 10.23"
+                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?h=WRLINUX_10_23_HEAD&id=%s" % co
             elif "WASSP_LINUX_1022" in one_link:
                 branch_name = "WRLinux 10.22"
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?h=WRLINUX_10_22_HEAD&id=%s" % co
+            elif "WASSP_LINUX_1021" in one_link:
+                branch_name = "WRLinux 10.21"
+                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?h=WRLINUX_10_21_HEAD&id=%s" % co
             elif "wassp-linux" in one_link:
                 branch_name = "wassp-linux"
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/wassp-linux.git/commit/?id=%s" % co
@@ -309,8 +322,14 @@ class User_Story():
         self.year = report_year
         self.username = username    
         #"WRLinux 10.17.41.x", "WRLinux 10.18","WRLinux 10.19", "WRLinux CD Standard", "WRLinux CD Next"
-        self.release = ["WRLinux 10.22", "WRLinux 10.21", "WRLinux CD Standard", "WRLinux CD Next",
-                       "centos7 kernel 5.10 stx", "debian stx"]
+        self.release = [
+            "WRLinux 10.23",
+            "WRLinux 10.22", 
+            "WRLinux 10.21", 
+            "WRLinux CD Standard", 
+            "WRLinux CD Next",
+            "centos7 kernel 5.10 stx", 
+            "debian stx"]
         #print self.ltaf_link
 
     def get_html(self, ltaf_link):    
