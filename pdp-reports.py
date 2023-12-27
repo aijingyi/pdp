@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright (C) 2013 - 2022 Wind River Systems, Inc.
+# Copyright (C) 2013 - 2024 Wind River Systems, Inc.
 # File  : pdp-reports.py
 # Author: Kai Liang <Kai.Liang@windriver.com>
 # Date  : 2019.12.25
@@ -22,7 +22,7 @@ class Env_Setup():
 
         #get your linux username
         username = getpass.getuser()
-        #username="zzhao1, kliang, wgao, xdong, lyang0, jhu2, zwang7, sjiao, pyan, jkang, lwang4, lliu2, xhou, flian, zliu2, cxu"
+        #username="zzhao1, kliang, wgao, xdong, lyang0, jhu2, zwang7, sjiao, pyan, jkang, lwang4, lliu2, xhou, flian, zliu2, cxu zwang11 zwang7 yshao1"
         # report year
         year = time.strftime("%Y", time.localtime())
 
@@ -41,7 +41,7 @@ class Env_Setup():
         self.report_year = opts.year
         self.commit = opts.commit
 
-        name_dic = {"zzhao1":"Zhenfeng Zhao", "kliang":"Kai Liang\|Kai.Liang", "wgao":"Wei Gao", "xdong":"xdong\|Xiangyu Dong", "lyang0":"Lei Yang", "jhu2":"Jianwei Hu", "rqu1":"Renfei.Qu", "sjiao":"sjiao\|Shilong.Jiao\|Shilong Jiao", "pyan":"Peng Yan", "jkang":"Jian Kang", "lwang4":"Dalia Wang\|Li Wang", "lliu2":"le.liu\|Le Liu", "xhou":"Xinlong Hou", "flian":"Fangfang Lian", "zliu2":"Zeming LIU\|Zeming Liu", "cxu":"Chi Xu"}
+        name_dic = {"zzhao1":"Zhenfeng Zhao", "kliang":"Kai Liang\|Kai.Liang", "wgao":"Wei Gao", "xdong":"xdong\|Xiangyu Dong", "lyang0":"Lei Yang", "jhu2":"Jianwei Hu", "sjiao":"sjiao\|Shilong.Jiao\|Shilong Jiao", "pyan":"Peng Yan", "jkang":"Jian Kang", "lwang4":"Dalia Wang\|Li Wang", "lliu2":"le.liu\|Le Liu", "xhou":"Xinlong Hou", "flian":"Fangfang Lian", "zliu2":"Zeming LIU\|Zeming Liu", "cxu":"Chi Xu","zwang11":"Zhen Wang", "zwang7":"Zhe Wang", "yshao1":"Yuxia Shao"}
 
         self.fullname = name_dic[self.username]
 
@@ -326,8 +326,7 @@ class User_Story():
             "WRLinux 10.23",
             "WRLinux 10.22", 
             "WRLinux 10.21", 
-            "WRLinux CD Standard", 
-            "WRLinux CD Next",
+            "WRLinux master-wr", 
             "centos7 kernel 5.10 stx", 
             "debian stx"]
         #print self.ltaf_link
