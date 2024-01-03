@@ -189,11 +189,12 @@ class Commit_Reports():
             "/lpg-build/cdc/WASSP_LINUX_1022/testcases/wrlinux",
             "/lpg-build/cdc/WASSP_LINUX_1023/testcases/wrlinux",
             "/lpg-build/cdc/WASSP_LINUX_DISTRO23/testcases/wrlinux",
-            "/lpg-build/cdc/starlingx/wrcp",
-            "/lpg-build/cdc/starlingx/debian",
+            "/net/pek-lpgtest7408/buildarea1/SharedImage/LTS23/wrlinux-testing-dl",
             "/lpg-build/cdc/starlingx/other_git/wassp-linux",
             "/lpg-build/cdc/jenkins-builder-v2",
-            "/lpg-build/cdc/jenkins-builder-lts23"
+            "/lpg-build/cdc/jenkins-builder-lts23",
+            "/lpg-build/cdc/starlingx/wrcp",
+            "/lpg-build/cdc/starlingx/debian"
         ]
         self.username = username
         self.fullname = fullname
@@ -248,12 +249,18 @@ class Commit_Reports():
             elif "WASSP_LINUX_1021" in one_link:
                 branch_name = "WRLinux 10.21"
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?h=WRLINUX_10_21_HEAD&id=%s" % co
+            elif "wrlinux-testing-dl" in one_link:
+                branch_name = "wrlinux-testing-dl"
+                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/wrlinux-testing-dl.git/commit/?h=master&id=%s" % co
             elif "wassp-linux" in one_link:
                 branch_name = "wassp-linux"
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/wassp-linux.git/commit/?id=%s" % co
-            elif "jenkins-builder" in one_link:
-                branch_name = "jenkins-builder"
-                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/jenkins-builder.git/commit/?id=%s" % co
+            elif "jenkins-builder-v2" in one_link:
+                branch_name = "jenkins-builder master"
+                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/jenkins-builder.git/commit/?h=master&id=%s" % co
+            elif "jenkins-builder-lts23" in one_link:
+                branch_name = "jenkins-builder lts23"
+                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/jenkins-builder.git/commit/?h=WRLINUX_10_23_HEAD&id=%s" % co
             show_cmd = "git show %s -s --format=%%s" % co
             get_show = subprocess.getoutput(show_cmd)
             #print("============================")
