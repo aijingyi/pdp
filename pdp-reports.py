@@ -67,22 +67,21 @@ class Defects_Top():
         self.username = username
         self.filename = env.filename
 
-        self.project = '"LINCD","SODEPEXE","DEVOPS","LIN1021","LIN1022","LIN1023","CGTS","DISTRO"'
+        #self.project = '"LINCD","SODEPEXE","DEVOPS","LIN1021","LIN1022","LIN1023","CGTS","DISTRO"'
+        self.project = 'issuetype not in (Story) AND project not in ("Linux TAF LTS", "Lab Ops", "Linux TAF 10.18", "Linux Execution Project", LINUXPG, ltaflts, ltaf8, "Linux TAF 9", ltaf1018, INTERN, IDPANORAMA, "StarlingX OS Debian Execution Project", "Aptiv Jira Sync", "Linux Test") '
         self.lab_project = "LABOPS"
 
         self.create_time = 'created  >= "%s/01/01" AND created <= "%s/12/31"' % (self.year, self.year)
         self.update_time = ' "Closed Date" >= "%s/01/01" AND  "Closed Date" <= "%s/12/31"' % (self.year, self.year)
-        self.jql_all = 'project in (%s)  AND reporter in (%s)  AND %s' %(self.project,self.username,self.create_time)
+        self.jql_all = '%s AND reporter in (%s)  AND %s' %(self.project,self.username,self.create_time)
         self.jql_lab = 'project in (%s)  AND reporter in (%s)  AND %s' %(self.lab_project,self.username,self.create_time)
-        self.jql_test_blocking = 'project in (%s)  AND reporter in (%s)  AND %s AND labels in (TESTING_BLOCKED,TEST_BLOCKING)' %(self.project,self.username,self.create_time)
+        self.jql_test_blocking = '%s  AND reporter in (%s)  AND %s AND labels in (TESTING_BLOCKED,TEST_BLOCKING)' %(self.project,self.username,self.create_time)
 
-        #self.jql_valid = '''project in (%s)  AND reporter in (%s)  AND %s AND status in (Resolved, Closed, "Checked In") AND resolution in (Fixed, "Won't Fix")''' %(self.project, self.username, self.create_time)
         # not Duplicate, Rejected, Withdraw
-        self.jql_valid = '''project in (%s)  AND reporter in (%s)  AND %s AND resolution was not in (Duplicate, Rejected, Withdrawn) ''' %(self.project, self.username, self.create_time)
-        self.jql_valid_all = 'project in (%s)  AND reporter in (%s)  AND %s AND status in (Resolved, Closed, "Checked In")' %(self.project, self.username,self.create_time)
+        self.jql_valid = '''%s AND reporter in (%s)  AND %s AND resolution was not in (Duplicate, Rejected, Withdrawn) ''' %(self.project, self.username, self.create_time)
+        self.jql_valid_all = '%s AND reporter in (%s)  AND %s AND status in (Resolved, Closed, "Checked In")' %(self.project, self.username,self.create_time)
 
-        #self.jql_verified = 'project in (LIN8, CGP8, SCP8, OVP8, "Linux Pulsar 8", "IDP 3.x", "Linux 10.17", "Linux 10.18","LIN1019")  AND tester in (%s)  AND %s' % (self.username, self.create_time)
-        self.jql_verified = 'project in (%s)  AND (tester in (%s) OR ( (reporter in (%s) AND labels not in (Verified, verified) ) )) AND status = Closed AND %s' % (self.project, self.username, self.username, self.create_time)
+        self.jql_verified = '%s AND (tester in (%s) OR ( (reporter in (%s) AND labels not in (Verified, verified) ) )) AND status = Closed AND %s' % (self.project, self.username, self.username, self.create_time)
        
    
     def curl_to_jira(self,jql):
@@ -120,7 +119,7 @@ class Defects_Top():
 
         #Defects with P1, P2, P3, P4:
         for p in ["P1","P2","P3","P4"]:
-            self.jql_p = 'project in (%s)  AND reporter in (%s)  AND Priority = %s AND %s' % (self.project,self.username, p, self.create_time)
+            self.jql_p = '%s AND reporter in (%s)  AND Priority = %s AND %s' % (self.project,self.username, p, self.create_time)
             #print self.jql_p
             num, defects_name = self.curl_to_jira(self.jql_p)
             num_txt =  "\n  Numbers of defects with %s: %s\n" % (p,num)
