@@ -68,7 +68,7 @@ class Defects_Top():
         self.filename = env.filename
 
         #self.project = '"LINCD","SODEPEXE","DEVOPS","LIN1021","LIN1022","LIN1023","CGTS","DISTRO"'
-        self.project = 'issuetype not in (Story) AND project not in ("Linux TAF LTS", "Lab Ops", "Linux TAF 10.18", "Linux Execution Project", LINUXPG, ltaflts, ltaf8, "Linux TAF 9", ltaf1018, INTERN, IDPANORAMA, "StarlingX OS Debian Execution Project", "Aptiv Jira Sync", "Linux Test") '
+        self.project = 'issuetype not in (Story, Epic) AND project not in ("Linux TAF LTS", "Lab Ops", "Linux TAF 10.18", "Linux Execution Project", LINUXPG, ltaflts, ltaf8, "Linux TAF 9", ltaf1018, INTERN, IDPANORAMA, "StarlingX OS Debian Execution Project", "Aptiv Jira Sync", "Linux Test") '
         self.lab_project = "LABOPS"
 
         self.create_time = 'created  >= "%s/01/01" AND created <= "%s/12/31"' % (self.year, self.year)
@@ -88,8 +88,11 @@ class Defects_Top():
         jql_code = urllib.request.quote(jql)
         url_data = self.url + jql_code
 
-        curl_data = 'curl -sb -H "Content-Type: application/json" -u apiuser:apiuser -X GET "%s"' % url_data
-        out = subprocess.getoutput(curl_data)
+        curl_data = 'curl -sb -H "Content-Type: application/json" -u apiuser:apiuser -X GET "%s" --progress-bar --max-time 20' % url_data
+        ret,out = subprocess.getstatusoutput(curl_data)
+        if not out:
+            print("Can't get defects from:\n %s" % url_data)
+            return 0, '  '
         out = json.loads(out)
         defects_name = ""
         for issue in  out["issues"]:
@@ -119,9 +122,9 @@ class Defects_Top():
 
         #Defects with P1, P2, P3, P4:
         for p in ["P1","P2","P3","P4"]:
-            self.jql_p = '%s AND reporter in (%s)  AND Priority = %s AND %s' % (self.project,self.username, p, self.create_time)
+            jql_p = '%s AND reporter in (%s)  AND Priority = %s AND %s' % (self.project,self.username, p, self.create_time)
             #print self.jql_p
-            num, defects_name = self.curl_to_jira(self.jql_p)
+            num, defects_name = self.curl_to_jira(jql_p)
             num_txt =  "\n  Numbers of defects with %s: %s\n" % (p,num)
             self.write_txt("%s" % num_txt)
             self.write_txt("%s" % defects_name)
@@ -433,6 +436,9 @@ class Jira_Project():
 
         curl_data = 'curl -sb -H "Content-Type: application/json" -u apiuser:apiuser -X GET "%s"' % url_data
         out = subprocess.getoutput(curl_data)
+        if not out:
+            print("Can't get data from JIRA")
+            return 0 , ""
         out = json.loads(out)
         defects_dic = {}
         defects_name = ""
