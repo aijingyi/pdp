@@ -25,6 +25,12 @@ class Env_Setup():
         #username="zzhao1, kliang, wgao, xdong, lyang0, jhu2, zwang7, sjiao, pyan, jkang, lwang4, lliu2, xhou, flian, zliu2, cxu zwang11 zwang7 yshao1"
         # report year
         year = time.strftime("%Y", time.localtime())
+        # LTAF link
+        self.ltaf_url = "http://pek-linux-ltaf.wrs.com/"
+        # JIRA api url
+        self.jira_url = "https://jira.wrs.com/rest/api/2/search?maxResults=500&jql=" 
+        # JIRA url for browsing defects
+        self.jira_browse = "https://jira.wrs.com/browse/"
 
         parser = OptionParser()
         parser.add_option("-u", "--username", default=username,dest= "username", help="The unix name, such as kliang")
@@ -41,7 +47,7 @@ class Env_Setup():
         self.report_year = opts.year
         self.commit = opts.commit
 
-        name_dic = {"zzhao1":"Zhenfeng Zhao", "kliang":"Kai Liang\|Kai.Liang", "wgao":"Wei Gao", "xdong":"xdong\|Xiangyu Dong", "lyang0":"Lei Yang", "jhu2":"Jianwei Hu", "sjiao":"sjiao\|Shilong.Jiao\|Shilong Jiao", "pyan":"Peng Yan", "jkang":"Jian Kang", "lwang4":"Dalia Wang\|Li Wang", "lliu2":"le.liu\|Le Liu", "xhou":"Xinlong Hou", "flian":"Fangfang Lian", "zliu2":"Zeming LIU\|Zeming Liu", "cxu":"Chi Xu","zwang11":"Zhen Wang", "zwang7":"Zhe Wang", "yshao1":"Yuxia Shao"}
+        name_dic = {"zzhao1":"Zhenfeng Zhao", "kliang":"Kai Liang\|Kai.Liang", "wgao":"Wei Gao", "xdong":"xdong\|Xiangyu Dong", "lyang0":"Lei Yang", "jhu2":"Jianwei Hu", "sjiao":"sjiao\|Shilong.Jiao\|Shilong Jiao", "jkang":"Jian Kang", "lwang4":"Dalia Wang\|Li Wang", "lliu2":"le.liu\|Le Liu", "xhou":"Xinlong Hou", "flian":"Fangfang Lian", "zliu2":"Zeming LIU\|Zeming Liu", "cxu":"Chi Xu","zwang11":"Zhen Wang" }
 
         self.fullname = name_dic[self.username]
 
@@ -68,7 +74,7 @@ class Defects_Top():
         self.filename = env.filename
 
         #self.project = '"LINCD","SODEPEXE","DEVOPS","LIN1021","LIN1022","LIN1023","CGTS","DISTRO"'
-        self.project = 'issuetype not in (Story, Epic) AND project not in ("Linux TAF LTS", "Lab Ops", "Linux TAF 10.18", "Linux Execution Project", LINUXPG, ltaflts, ltaf8, "Linux TAF 9", ltaf1018, INTERN, IDPANORAMA, "StarlingX OS Debian Execution Project", "Aptiv Jira Sync", "Linux Test") '
+        self.project = 'issuetype not in (Story, Epic, "Support Request",  Sub-Task, "Enhancement Request") AND project not in ("Linux TAF LTS", "Lab Ops", "Linux TAF 10.18", "Linux Execution Project", LINUXPG, ltaflts, ltaf8, "Linux TAF 9", ltaf1018, INTERN, IDPANORAMA, "StarlingX OS Debian Execution Project", "Aptiv Jira Sync", "Linux Test") '
         self.lab_project = "LABOPS"
 
         self.create_time = 'created  >= "%s/01/01" AND created <= "%s/12/31"' % (self.year, self.year)
@@ -187,16 +193,19 @@ class Commit_Reports():
         # test layer for master 
         self.link = [
             "/lpg-build/cdc/WASSP_LINUX_MASTER_WR/testcases/wrlinux",
-            "/lpg-build/cdc/WASSP_LINUX_1021/testcases/wrlinux",
-            "/lpg-build/cdc/WASSP_LINUX_1022/testcases/wrlinux",
+            #"/lpg-build/cdc/WASSP_LINUX_1021/testcases/wrlinux",
+            #"/lpg-build/cdc/WASSP_LINUX_1022/testcases/wrlinux",
             "/lpg-build/cdc/WASSP_LINUX_1023/testcases/wrlinux",
-            "/lpg-build/cdc/WASSP_LINUX_DISTRO23/testcases/wrlinux",
-            "/net/pek-lpgtest7408/buildarea1/SharedImage/LTS23/wrlinux-testing-dl",
+            "/lpg-build/cdc/WASSP_LINUX_1024/testcases/wrlinux",
+            #"/lpg-build/cdc/WASSP_LINUX_DISTRO23/testcases/wrlinux",
+            #"/net/pek-lpgtest7408/buildarea1/SharedImage/LTS23/wrlinux-testing-dl",
             "/lpg-build/cdc/starlingx/other_git/wassp-linux",
             "/lpg-build/cdc/jenkins-builder-v2",
             "/lpg-build/cdc/jenkins-builder-lts23",
-            "/lpg-build/cdc/starlingx/wrcp",
-            "/lpg-build/cdc/starlingx/debian"
+            "/lpg-build/cdc/jenkins-builder-lts24",
+            "/lpg-build/cdc/starlingx/wraxl/wrl-release-scripts",
+            #"/lpg-build/cdc/starlingx/wrcp",
+            #"/lpg-build/cdc/starlingx/debian"
         ]
         self.username = username
         self.fullname = fullname
@@ -239,21 +248,12 @@ class Commit_Reports():
             elif "WASSP_LINUX_MASTER_WR" in one_link:
                 branch_name = "WRLinux master"
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?h=master&id=%s" % co
+            elif "WASSP_LINUX_1024" in one_link:
+                branch_name = "WRLinux 10.24"
+                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?h=WRLINUX_10_24_HEAD&id=%s" % co
             elif "WASSP_LINUX_1023" in one_link:
                 branch_name = "WRLinux 10.23"
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?h=WRLINUX_10_23_HEAD&id=%s" % co
-            elif "WASSP_LINUX_DISTRO23" in one_link:
-                branch_name = "WRLinux Distro23"
-                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?h=WRLINUX_DISTRO23_HEAD&id=%s" % co
-            elif "WASSP_LINUX_1022" in one_link:
-                branch_name = "WRLinux 10.22"
-                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?h=WRLINUX_10_22_HEAD&id=%s" % co
-            elif "WASSP_LINUX_1021" in one_link:
-                branch_name = "WRLinux 10.21"
-                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?h=WRLINUX_10_21_HEAD&id=%s" % co
-            elif "wrlinux-testing-dl" in one_link:
-                branch_name = "wrlinux-testing-dl"
-                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/wrlinux-testing-dl.git/commit/?h=master&id=%s" % co
             elif "wassp-linux" in one_link:
                 branch_name = "wassp-linux"
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/wassp-linux.git/commit/?id=%s" % co
@@ -263,6 +263,12 @@ class Commit_Reports():
             elif "jenkins-builder-lts23" in one_link:
                 branch_name = "jenkins-builder lts23"
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/jenkins-builder.git/commit/?h=WRLINUX_10_23_HEAD&id=%s" % co
+            elif "jenkins-builder-lts24" in one_link:
+                branch_name = "jenkins-builder lts24"
+                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/jenkins-builder.git/commit/?h=WRLINUX_10_24_HEAD&id=%s" % co
+            elif "wrl-release-scripts" in one_link:
+                branch_name = "wraxl master-wr"
+                commit_link = "http://lxgit.wrs.com/cgit/tools/wrl-release-scripts.git/log/?h=master-wr&id=%s" % co
             show_cmd = "git show %s -s --format=%%s" % co
             get_show = subprocess.getoutput(show_cmd)
             #print("============================")
@@ -334,20 +340,19 @@ class User_Story():
     def __init__(self,username, report_year):
         self.year = report_year
         self.username = username    
+        self.ltaf_url = env.ltaf_url
         #"WRLinux 10.17.41.x", "WRLinux 10.18","WRLinux 10.19", "WRLinux CD Standard", "WRLinux CD Next"
         self.release = [
-            "WRLinux 10.23",
-            "WRLinux Distro23",
             "WRLinux 10.22", 
-            "WRLinux 10.21", 
+            "WRLinux 10.23",
+            "WRLinux 10.24", 
             "WRLinux master-wr", 
-            "centos7 kernel 5.10 stx", 
-            "debian stx"]
-        #print self.ltaf_link
+            ]
 
     def get_html(self, ltaf_link):    
+        #print(ltaf_link)
         html = urllib.request.urlopen(ltaf_link.replace(" ", "%20")).read()
-        #print html
+        #print(html)
         return html
     def get_us(self, html):
         html=html.decode('utf-8')
@@ -383,7 +388,7 @@ class User_Story():
     
     def get_all(self, release):
         
-        ltaf_link = "http://pek-lpgtest3.wrs.com/ltaf/requirement.php?releasename=%s&clearfilter=true&tf_requirement_tester=%s&tf_requirement_show_tr=on&tf_per_page=50" % (release, self.username)
+        ltaf_link = "{}requirement.php?releasename={}&clearfilter=true&tf_requirement_tester={}&tf_requirement_show_tr=on&tf_per_page=50".format(self.ltaf_url, release, self.username)
         html = self.get_html(ltaf_link)
         us = self.get_us(html)
         summary = self.get_summary(html)
@@ -391,8 +396,8 @@ class User_Story():
         release_txt = ""
         trs_num = 0
         for n in range(len(us)):
-            result_link = "http://pek-lpgtest3.wrs.com/ltaf/test_results.php?releasename=%s&clearfilter=true&tf_tr_show_latest=on&tf_tr_requirement=%s&extra_q_in=SKIP_WNR&tf_tr_start_date=%s-01-01&op_show_type=summary" % (release,us[n], self.year)
-            result_link_all = "http://pek-lpgtest3.wrs.com/ltaf/test_results.php?releasename=%s&clearfilter=true&tf_tr_show_latest=on&tf_tr_requirement=%s&extra_q_in=SKIP_WNR&tf_tr_start_date=%s-01-01" % (release,us[n], self.year)
+            result_link = "{}test_results.php?releasename={}&clearfilter=true&tf_tr_show_latest=on&tf_tr_requirement={}&extra_q_in=SKIP_WNR&tf_tr_start_date={}-01-01&op_show_type=summary".format(self.ltaf_url, release,us[n], self.year)
+            result_link_all = "{}test_results.php?releasename={}&clearfilter=true&tf_tr_show_latest=on&tf_tr_requirement={}&extra_q_in=SKIP_WNR&tf_tr_start_date={}-01-01".format(self.ltaf_url, release,us[n], self.year)
             re_html = self.get_html(result_link)
             trs_one = self.get_result_trs(re_html)
             if trs_one:
@@ -422,8 +427,8 @@ class User_Story():
 
 class Jira_Project():
     def __init__(self):
-        self.url = "https://jira.wrs.com/rest/api/2/search?maxResults=500&jql=" 
-        self.jira_browse = "https://jira.wrs.com/browse/"
+        self.url = env.jira_url
+        self.jira_browse = env.jira_browse
         self.year = env.report_year
         self.username = env.username
         
