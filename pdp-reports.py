@@ -194,18 +194,14 @@ class Commit_Reports():
         self.link = [
             "/lpg-build/cdc/WASSP_LINUX_MASTER_WR/testcases/wrlinux",
             #"/lpg-build/cdc/WASSP_LINUX_1021/testcases/wrlinux",
-            #"/lpg-build/cdc/WASSP_LINUX_1022/testcases/wrlinux",
-            "/lpg-build/cdc/WASSP_LINUX_1023/testcases/wrlinux",
+            "/lpg-build/cdc/WASSP_LINUX_1025/testcases/wrlinux",
+            #"/lpg-build/cdc/WASSP_LINUX_1023/testcases/wrlinux",
             "/lpg-build/cdc/WASSP_LINUX_1024/testcases/wrlinux",
-            #"/lpg-build/cdc/WASSP_LINUX_DISTRO23/testcases/wrlinux",
-            #"/net/pek-lpgtest7408/buildarea1/SharedImage/LTS23/wrlinux-testing-dl",
             "/lpg-build/cdc/starlingx/other_git/wassp-linux",
             "/lpg-build/cdc/jenkins-builder-v2",
-            "/lpg-build/cdc/jenkins-builder-lts23",
             "/lpg-build/cdc/jenkins-builder-lts24",
+            "/lpg-build/cdc/jenkins-builder-lts25",
             "/lpg-build/cdc/starlingx/wraxl/wrl-release-scripts",
-            #"/lpg-build/cdc/starlingx/wrcp",
-            #"/lpg-build/cdc/starlingx/debian"
         ]
         self.username = username
         self.fullname = fullname
@@ -239,30 +235,24 @@ class Commit_Reports():
         rca_update_nums = 0
         other_nums = 0
         for co in get_commits:
-            if "wrcp" in one_link:
-                branch_name = "wrcp"
-                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/wrcp.git/commit/?id=%s" % co
-            elif "debian" in one_link:
-                branch_name = "debian"
-                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/wrcp.git/commit/?h=debian&id=%s" % co
-            elif "WASSP_LINUX_MASTER_WR" in one_link:
+            if "WASSP_LINUX_MASTER_WR" in one_link:
                 branch_name = "WRLinux master"
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?h=master&id=%s" % co
+            elif "WASSP_LINUX_1025" in one_link:
+                branch_name = "WRLinux 10.25"
+                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?h=WRLINUX_10_25_HEAD&id=%s" % co
             elif "WASSP_LINUX_1024" in one_link:
                 branch_name = "WRLinux 10.24"
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?h=WRLINUX_10_24_HEAD&id=%s" % co
-            elif "WASSP_LINUX_1023" in one_link:
-                branch_name = "WRLinux 10.23"
-                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/testcases.git/commit/?h=WRLINUX_10_23_HEAD&id=%s" % co
             elif "wassp-linux" in one_link:
                 branch_name = "wassp-linux"
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/wassp-linux.git/commit/?id=%s" % co
             elif "jenkins-builder-v2" in one_link:
                 branch_name = "jenkins-builder master"
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/jenkins-builder.git/commit/?h=master&id=%s" % co
-            elif "jenkins-builder-lts23" in one_link:
-                branch_name = "jenkins-builder lts23"
-                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/jenkins-builder.git/commit/?h=WRLINUX_10_23_HEAD&id=%s" % co
+            elif "jenkins-builder-lts25" in one_link:
+                branch_name = "jenkins-builder lts25"
+                commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/jenkins-builder.git/commit/?h=WRLINUX_10_25_HEAD&id=%s" % co
             elif "jenkins-builder-lts24" in one_link:
                 branch_name = "jenkins-builder lts24"
                 commit_link = "http://lxgit.wrs.com/cgit/wrlinux-testing/jenkins-builder.git/commit/?h=WRLINUX_10_24_HEAD&id=%s" % co
@@ -343,9 +333,11 @@ class User_Story():
         self.ltaf_url = env.ltaf_url
         #"WRLinux 10.17.41.x", "WRLinux 10.18","WRLinux 10.19", "WRLinux CD Standard", "WRLinux CD Next"
         self.release = [
+            "WRLinux 10.21", 
             "WRLinux 10.22", 
             "WRLinux 10.23",
             "WRLinux 10.24", 
+            "WRLinux 10.25", 
             "WRLinux master-wr", 
             ]
 
