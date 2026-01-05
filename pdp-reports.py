@@ -24,7 +24,10 @@ class Env_Setup():
         username = getpass.getuser()
         #username="zzhao1, kliang, wgao, xdong, lyang0, jhu2, zwang7, sjiao, pyan, jkang, lwang4, lliu2, xhou, flian, zliu2, cxu zwang11 zwang7 yshao1"
         # report year
-        year = time.strftime("%Y", time.localtime())
+        year = time.localtime().tm_year
+        month = time.localtime().tm_mon
+        if month == 1:
+            year =  time.localtime().tm_year - 1
         # LTAF link
         self.ltaf_url = "http://pek-linux-ltaf.wrs.com/"
         # JIRA api url
@@ -35,7 +38,7 @@ class Env_Setup():
         parser = OptionParser()
         parser.add_option("-u", "--username", default=username,dest= "username", help="The unix name, such as kliang")
         parser.add_option("-l", "--link", default='yes',dest= "link", help="With jira link: yes. Without link: no")
-        parser.add_option("-y", "--year", default=year,dest= "year", help="Report year")
+        parser.add_option("-y", "--year", default=str(year),dest= "year", help="Report year")
         parser.add_option("-c", "--commit", default="yes",dest= "commit", help="Git commit summary, yes or on")
         #parser.add_option("-a", "--attach", default='',dest= "attach", help="The attach picture")
         #parser.add_option("-l", "--list", default='',dest= "list", help="The mail list")
@@ -47,7 +50,7 @@ class Env_Setup():
         self.report_year = opts.year
         self.commit = opts.commit
 
-        name_dic = {"zzhao1":"Zhenfeng Zhao", "kliang":"Kai Liang\|Kai.Liang", "wgao":"Wei Gao", "xdong":"xdong\|Xiangyu Dong", "lyang0":"Lei Yang", "jhu2":"Jianwei Hu", "sjiao":"sjiao\|Shilong.Jiao\|Shilong Jiao", "jkang":"Jian Kang", "lwang4":"Dalia Wang\|Li Wang", "lliu2":"le.liu\|Le Liu", "xhou":"Xinlong Hou", "flian":"Fangfang Lian", "zliu2":"Zeming LIU\|Zeming Liu", "cxu":"Chi Xu","zwang11":"Zhen Wang" }
+        name_dic = {"zzhao1":"Zhenfeng Zhao", "kliang":r"Kai Liang\|Kai.Liang", "wgao":"Wei Gao", "xdong":r"xdong\|Xiangyu Dong", "lyang0":"Lei Yang", "jhu2":"Jianwei Hu", "sjiao":r"sjiao\|Shilong.Jiao\|Shilong Jiao", "jkang":"Jian Kang", "lwang4":r"Dalia Wang\|Li Wang", "lliu2":r"le.liu\|Le Liu", "xhou":"Xinlong Hou", "flian":"Fangfang Lian", "zliu2":r"Zeming LIU\|Zeming Liu", "cxu":"Chi Xu","zwang11":"Zhen Wang" }
 
         self.fullname = name_dic[self.username]
 
@@ -264,7 +267,7 @@ class Commit_Reports():
             #print("============================")
             #print(get_show)
             #print("============================")
-            if re.search("test results for|ipxe|board|testresults for|test-plan|testplan|test plan|test report|testing report|Update XML and test_case|\.ini|target info|#", get_show):
+            if re.search(r"test results for|ipxe|board|testresults for|test-plan|testplan|test plan|test report|testing report|Update XML and test_case|\.ini|target info|#", get_show):
                 other_nums += 1
                 if env.commit == "no":
                     other_cases = other_cases  + "  " + commit_link + "\n"
